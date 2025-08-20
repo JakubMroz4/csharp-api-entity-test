@@ -13,15 +13,61 @@ namespace workshop.wwwapi.Repository
         }
         public async Task<IEnumerable<Patient>> GetPatients()
         {
-            return await _databaseContext.Patients.ToListAsync();
+            return await _databaseContext.Patients
+                .Include(p => p.Appointments)
+                .ThenInclude(a => a.Doctor)
+                .ToListAsync();
         }
         public async Task<IEnumerable<Doctor>> GetDoctors()
         {
-            return await _databaseContext.Doctors.ToListAsync();
+            return await _databaseContext.Doctors
+                .Include(d => d.Appointments)
+                .ThenInclude(a => a.Patient)
+                .ToListAsync();
         }
         public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctor(int id)
         {
-            return await _databaseContext.Appointments.Where(a => a.DoctorId==id).ToListAsync();
+            return await _databaseContext.Appointments
+                .Where(a => a.DoctorId==id)
+                .Include(a => a.Patient)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> GetAppointmentsByPatient(int id)
+        {
+            return await _databaseContext.Appointments
+                .Where(a => a.PatientId == id)
+                .Include(a => a.Doctor)
+                .ToListAsync();
+        }
+
+        public async Task<Appointment> CreateAppointment(Appointment appointment)
+        {
+            var exists = await _databaseContext.Appointments
+                .Where(a => a.PatientId == appointment.PatientId)
+                .Where(A => A.DoctorId == appointment.DoctorId)
+                .FirstOrDefaultAsync();
+
+            if (exists is not null)
+            {
+                return null;
+            }
+
+            await _databaseContext.AddAsync(appointment);
+            await _databaseContext.SaveChangesAsync();
+
+            var entity = await _databaseContext.Appointments
+                .Where(a => a.PatientId == appointment.PatientId)
+                .Where(A => A.DoctorId == appointment.DoctorId)
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor)
+                .FirstOrDefaultAsync();
+
+            if (entity is null)
+            {
+                return null;
+            }
+            return entity;
         }
     }
 }
