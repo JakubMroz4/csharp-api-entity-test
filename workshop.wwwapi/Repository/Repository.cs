@@ -6,8 +6,8 @@ namespace workshop.wwwapi.Repository
 {
     public class Repository : IRepository
     {
-        private DatabaseContext _databaseContext;
-        public Repository(DatabaseContext db)
+        private DataContext _databaseContext;
+        public Repository(DataContext db)
         {
             _databaseContext = db;
         }
