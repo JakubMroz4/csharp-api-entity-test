@@ -27,6 +27,12 @@ namespace workshop.wwwapi.Repository
         }
         public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctor(int id)
         {
+            var exists = await _databaseContext.Doctors.Where(d => d.Id == id).FirstOrDefaultAsync();
+            if (exists is null)
+            {
+                return null;
+            }
+
             return await _databaseContext.Appointments
                 .Where(a => a.DoctorId==id)
                 .Include(a => a.Patient)
@@ -35,6 +41,12 @@ namespace workshop.wwwapi.Repository
 
         public async Task<IEnumerable<Appointment>> GetAppointmentsByPatient(int id)
         {
+            var exists = await _databaseContext.Patients.Where(p => p.Id==id).FirstOrDefaultAsync();
+            if (exists is null)
+            {
+                return null;
+            }
+
             return await _databaseContext.Appointments
                 .Where(a => a.PatientId == id)
                 .Include(a => a.Doctor)

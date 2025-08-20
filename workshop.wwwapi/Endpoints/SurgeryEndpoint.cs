@@ -46,9 +46,14 @@ namespace workshop.wwwapi.Endpoints
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public static async Task<IResult> GetAppointmentsByDoctor(IRepository repository, int id)
         {
             var appointments = await repository.GetAppointmentsByDoctor(id);
+            if (appointments is null)
+            {
+                return TypedResults.NotFound();
+            }
 
             var dtos = new List<AppointmentForDoctorDto>();
             foreach (var appointment in appointments)
@@ -59,9 +64,14 @@ namespace workshop.wwwapi.Endpoints
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public static async Task<IResult> GetAppointmentsByPatient(IRepository repository, int id)
         {
             var appointments = await repository.GetAppointmentsByPatient(id);
+            if (appointments is null)
+            {
+                return TypedResults.NotFound();
+            }
 
             var dtos = new List<AppointmentForPatientDto>();
             foreach (var appointment in appointments)
@@ -72,6 +82,7 @@ namespace workshop.wwwapi.Endpoints
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public static async Task<IResult> CreateAppointment(IRepository repository, HttpRequest request)
         {
             AppointmentPostDto inDto = await ValidateFromRequest<AppointmentPostDto>(request);
