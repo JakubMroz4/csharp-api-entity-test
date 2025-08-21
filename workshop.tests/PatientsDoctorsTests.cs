@@ -5,6 +5,9 @@ namespace workshop.tests;
 
 public class Tests
 {
+    // seeded values
+    private string _getAllPatient = "[{\"fullName\":\"Patrick\",\"appointments\":[{\"doctorId\":1,\"doctorName\":\"Adam Doe\",\"booking\":\"2025-08-20T11:45:25.071707Z\"},{\"doctorId\":2,\"doctorName\":\"Florian Frank\",\"booking\":\"2025-08-20T11:45:25.071741Z\"},{\"doctorId\":3,\"doctorName\":\"Bob Bagel\",\"booking\":\"2025-08-20T11:45:25.071741Z\"}]},{\"fullName\":\"Spongebob\",\"appointments\":[{\"doctorId\":2,\"doctorName\":\"Florian Frank\",\"booking\":\"2025-08-20T11:45:25.071741Z\"},{\"doctorId\":3,\"doctorName\":\"Bob Bagel\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":4,\"doctorName\":\"Robert Bank\",\"booking\":\"2025-08-20T11:45:25.071742Z\"}]},{\"fullName\":\"Sandy\",\"appointments\":[{\"doctorId\":3,\"doctorName\":\"Bob Bagel\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":4,\"doctorName\":\"Robert Bank\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":5,\"doctorName\":\"Leonardo Gonzalez\",\"booking\":\"2025-08-20T11:45:25.071742Z\"}]},{\"fullName\":\"Mr Crabs\",\"appointments\":[{\"doctorId\":1,\"doctorName\":\"Adam Doe\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":4,\"doctorName\":\"Robert Bank\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":5,\"doctorName\":\"Leonardo Gonzalez\",\"booking\":\"2025-08-20T11:45:25.071742Z\"}]},{\"fullName\":\"Squidward\",\"appointments\":[{\"doctorId\":1,\"doctorName\":\"Adam Doe\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":2,\"doctorName\":\"Florian Frank\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":5,\"doctorName\":\"Leonardo Gonzalez\",\"booking\":\"2025-08-20T11:45:25.071742Z\"}]}]";
+    private string _getAllDoctor = "[{\"fullName\":\"Patrick\",\"appointments\":[{\"doctorId\":1,\"doctorName\":\"Adam Doe\",\"booking\":\"2025-08-20T11:45:25.071707Z\"},{\"doctorId\":2,\"doctorName\":\"Florian Frank\",\"booking\":\"2025-08-20T11:45:25.071741Z\"},{\"doctorId\":3,\"doctorName\":\"Bob Bagel\",\"booking\":\"2025-08-20T11:45:25.071741Z\"}]},{\"fullName\":\"Spongebob\",\"appointments\":[{\"doctorId\":2,\"doctorName\":\"Florian Frank\",\"booking\":\"2025-08-20T11:45:25.071741Z\"},{\"doctorId\":3,\"doctorName\":\"Bob Bagel\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":4,\"doctorName\":\"Robert Bank\",\"booking\":\"2025-08-20T11:45:25.071742Z\"}]},{\"fullName\":\"Sandy\",\"appointments\":[{\"doctorId\":3,\"doctorName\":\"Bob Bagel\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":4,\"doctorName\":\"Robert Bank\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":5,\"doctorName\":\"Leonardo Gonzalez\",\"booking\":\"2025-08-20T11:45:25.071742Z\"}]},{\"fullName\":\"Mr Crabs\",\"appointments\":[{\"doctorId\":1,\"doctorName\":\"Adam Doe\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":4,\"doctorName\":\"Robert Bank\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":5,\"doctorName\":\"Leonardo Gonzalez\",\"booking\":\"2025-08-20T11:45:25.071742Z\"}]},{\"fullName\":\"Squidward\",\"appointments\":[{\"doctorId\":1,\"doctorName\":\"Adam Doe\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":2,\"doctorName\":\"Florian Frank\",\"booking\":\"2025-08-20T11:45:25.071742Z\"},{\"doctorId\":5,\"doctorName\":\"Leonardo Gonzalez\",\"booking\":\"2025-08-20T11:45:25.071742Z\"}]}]";
 
     [Test]
     public async Task PatientEndpointStatusOk()
@@ -18,6 +21,11 @@ public class Tests
 
         // Assert
         Assert.That(response.StatusCode == System.Net.HttpStatusCode.OK);
+
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
+
+        Assert.That(content == _getAllPatient);
     }
 
     [Test]
@@ -29,9 +37,13 @@ public class Tests
 
         // Act
         var response = await client.GetAsync("/surgery/doctors");
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
 
         // Assert
         Assert.That(response.StatusCode == System.Net.HttpStatusCode.OK);
+
+        Assert.That(content == _getAllDoctor);
     }
 
     [Test]
