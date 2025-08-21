@@ -11,6 +11,7 @@ namespace workshop.wwwapi.Factories
             dto.PatientId = appointment.PatientId;
             dto.PatientName = appointment.Patient.FullName;
             dto.Booking = appointment.Booking;
+            dto.Type = appointment.Type;
 
             return dto;
         }
@@ -21,6 +22,7 @@ namespace workshop.wwwapi.Factories
             dto.DoctorId = appointment.DoctorId;
             dto.DoctorName = appointment.Doctor.FullName;
             dto.Booking = appointment.Booking;
+            dto.Type = appointment.Type;
 
             return dto;
         }
@@ -32,6 +34,7 @@ namespace workshop.wwwapi.Factories
             dto.DoctorId = appointment.DoctorId;
             dto.DoctorName = appointment.Doctor.FullName;
             dto.Booking = appointment.Booking;
+            dto.Type = appointment.Type;
 
             return dto;
         }
@@ -42,6 +45,7 @@ namespace workshop.wwwapi.Factories
             appointment.PatientId = dto.PatientId;
             appointment.DoctorId = dto.DoctorId;
             appointment.Booking = dto.Booking;
+            appointment.Type = dto.Type;
 
             return appointment;
         }

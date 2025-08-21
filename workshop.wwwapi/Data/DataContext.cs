@@ -51,25 +51,65 @@ namespace workshop.wwwapi.Data
                 );
 
             modelBuilder.Entity<Appointment>().HasData(
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 1},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 1},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 1},
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson},
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson },
 
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 2},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 2},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 2},
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 2, Type = enums.AppointmentTypeEnum.Online },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 2, Type = enums.AppointmentTypeEnum.Online },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 2, Type = enums.AppointmentTypeEnum.Online },
 
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 3},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 3},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 3},
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson },
 
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 4},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 4},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 4},
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 4, Type = enums.AppointmentTypeEnum.Online },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 4, Type = enums.AppointmentTypeEnum.Online },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 4, Type = enums.AppointmentTypeEnum.Online },
 
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 5},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 5},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 5}
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson },
+                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson }
+                );
+
+            // prescpritions and medicine config & seeder
+
+            modelBuilder.Entity<PrescribedMedicine>()
+                .HasKey(a => new { a.MedicineId, a.PrescriptionId });
+
+            modelBuilder.Entity<PrescribedMedicine>()
+                .HasOne(pm => pm.Medicine)
+                .WithMany(m => m.Prescriptions)
+                .HasForeignKey(pm => pm.MedicineId);
+
+            modelBuilder.Entity<PrescribedMedicine>()
+                .HasOne(pm => pm.Prescription)
+                .WithMany(m => m.Medicines)
+                .HasForeignKey(pm => pm.PrescriptionId);
+
+            var med1 = new Medicine { Id = 1, Name = "paracetamol" };
+            var med2 = new Medicine { Id = 2, Name = "ibuprofen" };
+
+            var prescription1 = new Prescription { Id = 1, AppointmentId = 1 };
+            var prescription2 = new Prescription { Id = 2, AppointmentId = 2 };
+            var prescription3 = new Prescription { Id = 3, AppointmentId = 3 };
+            var prescription4 = new Prescription { Id = 4, AppointmentId = 4 };
+            var prescription5 = new Prescription { Id = 5, AppointmentId = 5 };
+
+            modelBuilder.Entity<Medicine>().HasData(
+                med1, med2
+                );
+
+            modelBuilder.Entity<Prescription>().HasData(
+                prescription1, prescription2, prescription3, prescription4, prescription5
+                );
+
+            modelBuilder.Entity<PrescribedMedicine>().HasData(
+                new PrescribedMedicine { PrescriptionId = 1, MedicineId = 1, Quantity = 5, Notes = "3 every day"},
+                new PrescribedMedicine { PrescriptionId = 2, MedicineId = 2, Quantity = 5, Notes = "3 every day" },
+                new PrescribedMedicine { PrescriptionId = 3, MedicineId = 1, Quantity = 5, Notes = "3 every day" },
+                new PrescribedMedicine { PrescriptionId = 4, MedicineId = 2, Quantity = 5, Notes = "3 every day" },
+                new PrescribedMedicine { PrescriptionId = 5, MedicineId = 1, Quantity = 5, Notes = "3 every day" }
                 );
         }
 
@@ -77,5 +117,8 @@ namespace workshop.wwwapi.Data
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Medicine> Medicines { get; set; }
+        public DbSet<Prescription> Prescriptions { get; set; }
+        public DbSet<PrescribedMedicine> PrescriptionsMedicines { get; set;}
     }
 }
