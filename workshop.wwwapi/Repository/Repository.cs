@@ -81,5 +81,59 @@ namespace workshop.wwwapi.Repository
             }
             return entity;
         }
+
+        public async Task<IEnumerable<Prescription>> GetPrescriptions()
+        {
+            return await _databaseContext.Prescriptions
+                .Include(p => p.Appointment)
+                .Include(p => p.Medicines)
+                .ToListAsync();
+        }
+
+        public async Task<Prescription> GetPrescriptionbyId(int id)
+        {
+            var exists = await _databaseContext.Prescriptions
+                .Where(p => p.Id == id)
+                .Include(p => p.Appointment)
+                .Include(p => p.Medicines)
+                .FirstOrDefaultAsync();
+
+            if (exists is null)
+            {
+                return null;
+            }
+
+            return exists;
+        }
+
+        public async Task<Prescription> CreatePrescription(Prescription prescription)
+        {
+            var exists = await _databaseContext.Prescriptions
+                .Where(p => p.PatientId == prescription.PatientId)
+                .Where(A => A.DoctorId == prescription.DoctorId)
+                .FirstOrDefaultAsync();
+            if (exists is not null)
+            {
+                return null;
+            }
+
+            await _databaseContext.Prescriptions.AddAsync(prescription);
+            await _databaseContext.SaveChangesAsync();
+
+            return prescription;
+        }
+
+        public async Task<PrescribedMedicine> CreatePrescribedMedicide(PrescribedMedicine prescribed)
+        {
+            var exists = await _databaseContext.PrescribedMedicines
+                .Where(pm => pm.MedicineId == prescribed.MedicineId)
+                .Where(pm => pm.PrescriptionId == prescribed.PrescriptionId)
+                .FirstOrDefaultAsync();
+            if (exists is not null) { return null; }
+
+            _databaseContext.PrescribedMedicines.Add(prescribed);
+
+            throw new NotImplementedException();
+        }
     }
 }

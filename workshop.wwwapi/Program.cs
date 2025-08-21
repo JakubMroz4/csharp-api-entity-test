@@ -40,6 +40,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.ConfigurePatientEndpoint();
+app.ConfigurePrescriptionEndpoint();
 
 app.Run();
 
