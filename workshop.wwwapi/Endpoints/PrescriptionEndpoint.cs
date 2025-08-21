@@ -17,7 +17,7 @@ namespace workshop.wwwapi.Endpoints
 
             prescriptionGroup.MapGet("/", GetPrescriptions);
             prescriptionGroup.MapGet("/{id}", GetPrescription);
-            prescriptionGroup.MapGet("/create", CreatePrescription).Accepts<PrescriptionPostDto>(contentType);
+            prescriptionGroup.MapPost("/create", CreatePrescription).Accepts<PrescriptionPostDto>(contentType);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -66,13 +66,15 @@ namespace workshop.wwwapi.Endpoints
                 return TypedResults.BadRequest();
             }
 
-            foreach (var prescribed in inDto.Medicines)
+            foreach (var prescribedDto in inDto.Medicines)
             {
-                await repository.CreatePrescribedMedicide(PrescribedMedicineFactory.PrescribedMedicineFromDto(prescribed));
+                var prescribed = PrescribedMedicineFactory.PrescribedMedicineFromDto(prescribedDto);
+                prescribed.PrescriptionId = created.Id;
+                await repository.CreatePrescribedMedicide(prescribed);
             }
 
             var outDto = PrescriptionFactory.DtoFromPrescription(created);
-            return TypedResults.Ok(prescription);
+            return TypedResults.Ok();
         }
 
         private async static Task<T> ValidateFromRequest<T>(HttpRequest request)

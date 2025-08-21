@@ -131,9 +131,15 @@ namespace workshop.wwwapi.Repository
                 .FirstOrDefaultAsync();
             if (exists is not null) { return null; }
 
-            _databaseContext.PrescribedMedicines.Add(prescribed);
+            await _databaseContext.PrescribedMedicines.AddAsync(prescribed);
+            await _databaseContext.SaveChangesAsync();
 
-            throw new NotImplementedException();
+            var added = await _databaseContext.PrescribedMedicines
+                .Where(pm => pm.MedicineId == prescribed.MedicineId)
+                .Where(pm => pm.PrescriptionId == prescribed.PrescriptionId)
+                .FirstOrDefaultAsync();
+
+            return added;
         }
     }
 }

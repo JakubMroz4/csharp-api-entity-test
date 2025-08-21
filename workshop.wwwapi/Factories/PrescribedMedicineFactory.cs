@@ -8,7 +8,6 @@ namespace workshop.wwwapi.Factories
         public static PrescribedMedicine PrescribedMedicineFromDto(PrescribedMedicineDto dto)
         {
             var entity = new PrescribedMedicine();
-            entity.PrescriptionId = dto.PrescriptionId;
             entity.MedicineId = dto.MedicineId;
             entity.Quantity = dto.Quantity;
             entity.Notes = dto.Notes;
@@ -22,7 +21,6 @@ namespace workshop.wwwapi.Factories
             dto.Quantity = entity.Quantity;
             dto.Notes = entity.Notes;
             dto.MedicineId = entity.MedicineId;
-            dto.PrescriptionId = entity.PrescriptionId;
 
             return dto;
         }
