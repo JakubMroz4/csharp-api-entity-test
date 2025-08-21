@@ -14,7 +14,7 @@ namespace workshop.wwwapi.Models
         public Patient Patient { get; set; }
         public AppointmentTypeEnum Type { get; set; }
         public int? PrescriptionId { get; set; }
-        public Prescription? Patric { get; set; }
+        public Prescription? Prescription { get; set; }
 
     }
 }

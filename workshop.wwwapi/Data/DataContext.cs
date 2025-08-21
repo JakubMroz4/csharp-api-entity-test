@@ -29,6 +29,11 @@ namespace workshop.wwwapi.Data
                 .WithMany(p => p.Appointments)
                 .HasForeignKey(a => a.DoctorId);
 
+            modelBuilder.Entity<Prescription>()
+                .HasOne(p => p.Appointment)
+                .WithOne(a => a.Prescription)
+                .HasForeignKey<Prescription>(p => new { p.DoctorId, p.PatientId });
+
             //TODO: Seed Data Here
             var doc1 = new Doctor { Id = 1, FullName = "Adam Doe" };
             var doc2 = new Doctor { Id = 2, FullName = "Florian Frank" };
@@ -50,26 +55,30 @@ namespace workshop.wwwapi.Data
                 pat1, pat2, pat3, pat4, pat5
                 );
 
+            var appointment1 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson, PrescriptionId = 1 };
+            var appointment2 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson };
+            var appointment3 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson };
+
+            var appointment4 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 2, Type = enums.AppointmentTypeEnum.Online, PrescriptionId = 2 };
+            var appointment5 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 2, Type = enums.AppointmentTypeEnum.Online };
+            var appointment6 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 2, Type = enums.AppointmentTypeEnum.Online };
+
+            var appointment7 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson , PrescriptionId = 3 };
+            var appointment8 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson };
+            var appointment9 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson };
+
+            var appointment10 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 4, Type = enums.AppointmentTypeEnum.Online , PrescriptionId = 4 };
+            var appointment11 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 4, Type = enums.AppointmentTypeEnum.Online };
+            var appointment12 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 4, Type = enums.AppointmentTypeEnum.Online };
+
+            var appointment13 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson , PrescriptionId = 5 };
+            var appointment14 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson };
+            var appointment15 = new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson };
+
             modelBuilder.Entity<Appointment>().HasData(
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson},
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 1, Type = enums.AppointmentTypeEnum.InPerson },
-
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 2, Type = enums.AppointmentTypeEnum.Online },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 2, Type = enums.AppointmentTypeEnum.Online },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 2, Type = enums.AppointmentTypeEnum.Online },
-
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 3, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 3, Type = enums.AppointmentTypeEnum.InPerson },
-
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 4, PatientId = 4, Type = enums.AppointmentTypeEnum.Online },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 4, Type = enums.AppointmentTypeEnum.Online },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 4, Type = enums.AppointmentTypeEnum.Online },
-
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 5, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 1, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson },
-                new Appointment { Booking = DateTime.UtcNow, DoctorId = 2, PatientId = 5, Type = enums.AppointmentTypeEnum.InPerson }
+                appointment1, appointment2, appointment3, appointment4, appointment5, appointment6,
+                appointment7, appointment8, appointment9, appointment10, appointment11, appointment12,
+                appointment13, appointment14, appointment15
                 );
 
             // prescpritions and medicine config & seeder
@@ -90,11 +99,11 @@ namespace workshop.wwwapi.Data
             var med1 = new Medicine { Id = 1, Name = "paracetamol" };
             var med2 = new Medicine { Id = 2, Name = "ibuprofen" };
 
-            var prescription1 = new Prescription { Id = 1, AppointmentId = 1 };
-            var prescription2 = new Prescription { Id = 2, AppointmentId = 2 };
-            var prescription3 = new Prescription { Id = 3, AppointmentId = 3 };
-            var prescription4 = new Prescription { Id = 4, AppointmentId = 4 };
-            var prescription5 = new Prescription { Id = 5, AppointmentId = 5 };
+            var prescription1 = new Prescription { Id = 1, PatientId = 1, DoctorId = 1};
+            var prescription2 = new Prescription { Id = 2, PatientId = 2, DoctorId = 2 };
+            var prescription3 = new Prescription { Id = 3, PatientId = 3, DoctorId = 3 };
+            var prescription4 = new Prescription { Id = 4, PatientId = 4, DoctorId = 4 };
+            var prescription5 = new Prescription { Id = 5, PatientId = 5, DoctorId = 5 };
 
             modelBuilder.Entity<Medicine>().HasData(
                 med1, med2
@@ -119,6 +128,6 @@ namespace workshop.wwwapi.Data
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
-        public DbSet<PrescribedMedicine> PrescriptionsMedicines { get; set;}
+        public DbSet<PrescribedMedicine> PrescribedMedicines { get; set;}
     }
 }

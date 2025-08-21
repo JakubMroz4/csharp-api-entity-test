@@ -19,6 +19,7 @@ builder.Services.AddDbContext<DataContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString"))
     .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
     options.LogTo(message => Debug.WriteLine(message));
+    options.EnableSensitiveDataLogging();
 
 });
 
